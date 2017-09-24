@@ -7,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     ListView futuramaPersons;
+
+    private ArrayList<Person> personArrayList = new ArrayList<>();
 
     private String[] persons = {"Philip J. Fry", "Turanga Leela", "Bender Bending", "Doctor Zoidberg", "Amy Wong", "Hubert J. Farnsworth", "Zap Branningan", "Scruffy"
             , "Kif Kroker", "Nibbler", "Hermes Conrad", "Mom"};
@@ -43,15 +46,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        int i = 0;
+        for(String name : persons){
+            Person personDto = new Person(name, descriptions[i], listIcons[i]);
+            personArrayList.add(personDto);
+            i++;
+        }
+
         futuramaPersons = (ListView) findViewById(R.id.listVFuturamaPersons);
-
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(
-                getApplication(),
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                persons
-        );
-
         futuramaPersons.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,14 +67,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         CustomListViewAdapter adapter;
-        int i = 0;
-
         adapter = new CustomListViewAdapter(getApplicationContext(), R.layout.list_view_cel);
 
-        for(String name : persons){
-            DataProvider dataProvider = new DataProvider(listIcons[i], name, descriptions[i]);
+        for(Person personDto : personArrayList){
+            DataProvider dataProvider = new DataProvider(personDto.getImage(), personDto.getName(), personDto.getDescription());
             adapter.add(dataProvider);
-            i++;
         }
 
         futuramaPersons.setAdapter(adapter);
